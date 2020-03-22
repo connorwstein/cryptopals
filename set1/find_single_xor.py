@@ -1,7 +1,7 @@
 from set1.single_xor import decrypt_single_byte_xor
 
 lines = []
-with open('4') as f:
+with open('4.txt') as f:
     lines = f.readlines()
 best_score, best_text = float('inf'), ""
 for l in lines:

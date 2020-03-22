@@ -62,4 +62,4 @@ def break_repeating_xor(file):
     return decrypted.decode('utf-8')
 
 
-print(break_repeating_xor('6'))
+print(break_repeating_xor('6.txt'))
