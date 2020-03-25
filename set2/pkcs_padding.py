@@ -8,4 +8,10 @@ def pad_pkcs7(pt, block_size):
     pad = block_size - len(pt) % block_size
     return bytes(pt + bytes([pad for _ in range(pad)]))
 
+def unpad_pkcs7(ct):
+    # the last byte tells you how much padding to remove
+    return ct[:-ct[-1]]
+
+
 print(pad_pkcs7(bytes("YELLOW SUBMARINE", 'utf-8'), 20))
+print(unpad_pkcs7(b'YELLOW SUBMARINE\x04\x04\x04\x04'))
