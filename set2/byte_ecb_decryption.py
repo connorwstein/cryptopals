@@ -1,7 +1,7 @@
 from set2.detection_oracle import random_aes_key
 from set2.pkcs_padding import pad_pkcs7
 from set1.aes_ecb import encrypt_aes_ecb
-from set1.aes_ecb_detect import  is_ecb
+from set1.aes_ecb_detect import is_ecb
 import base64
 
 key = random_aes_key()
