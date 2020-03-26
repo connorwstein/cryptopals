@@ -3,10 +3,8 @@ import base64
 from set1.single_xor import decrypt_single_byte_xor
 from set1.repeate_xor import encrypt_repeating_xor
 
-# Number of differing bits in two bytes
-
-
 def num_diff_bits(b1, b2):
+    # Number of differing bits in two bytes
     num = 0
     while b1 > 0 or b2 > 0:
         num += (b1 & 1) ^ (b2 & 1)
@@ -14,11 +12,9 @@ def num_diff_bits(b1, b2):
         b2 >>= 1
     return num
 
-# Return the edit distance between two strings
-# the number of differing bits
-
-
 def edit_distance(s1, s2):
+    # Return the edit distance between two strings
+    # the number of differing bits
     if len(s1) != len(s2):
         raise Exception("not the same size")
     return sum([num_diff_bits(b1, b2) for b1, b2 in zip(s1, s2)])
@@ -26,7 +22,6 @@ def edit_distance(s1, s2):
 
 assert(edit_distance(bytes("this is a test", 'utf-8'),
                      bytes("wokka wokka!!!", 'utf-8')) == 37)
-
 
 def find_key_size(ciphertext):
     # Takes in an array of bytes
@@ -60,6 +55,5 @@ def break_repeating_xor(file):
         key.append(chr(key_for_block))
     decrypted = encrypt_repeating_xor(''.join(key), msg)
     return decrypted.decode('utf-8')
-
 
 print(break_repeating_xor('6.txt'))

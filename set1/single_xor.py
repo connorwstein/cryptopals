@@ -30,7 +30,6 @@ def score(text):
     }
     return sum([char_freq.get(b, 0)/100 for b in text.lower()])
 
-
 def decrypt_single_byte_xor(msg):
     m = bytes.fromhex(msg)
     scores = []
@@ -44,6 +43,6 @@ def decrypt_single_byte_xor(msg):
         scores.append((s, a, k))
     return sorted(scores, key=lambda k: k[1], reverse=True)[0]
 
-
-msg = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-print(decrypt_single_byte_xor(msg))
+if __name__ == '__main__':
+    msg = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+    print(decrypt_single_byte_xor(msg))

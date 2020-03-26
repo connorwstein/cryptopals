@@ -12,6 +12,6 @@ def unpad_pkcs7(ct):
     # the last byte tells you how much padding to remove
     return ct[:-ct[-1]]
 
-
-print(pad_pkcs7(bytes("YELLOW SUBMARINE", 'utf-8'), 20))
-print(unpad_pkcs7(b'YELLOW SUBMARINE\x04\x04\x04\x04'))
+if __name__ == '__main__':
+    print(pad_pkcs7(bytes("YELLOW SUBMARINE", 'utf-8'), 20))
+    print(unpad_pkcs7(b'YELLOW SUBMARINE\x04\x04\x04\x04'))

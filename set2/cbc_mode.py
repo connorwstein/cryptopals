@@ -31,5 +31,3 @@ if __name__ == '__main__':
     with open('10.txt', 'rb') as f:
         msg = base64.decodebytes(f.read())
     print(decrypt_aes_cbc(b'YELLOW SUBMARINE', msg, 16, b'\x00' * 16))
-
-

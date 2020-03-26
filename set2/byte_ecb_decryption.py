@@ -13,42 +13,42 @@ def encryption_oracle(msg):
     msg = msg + secret
     return encrypt_aes_ecb(key, pad_pkcs7(msg, 16))
 
-def find_block_size():
+def find_block_size(oracle):
     # Feed 1 byte at a time until we know the block_size. Assuming we don't know
     # the padding scheme, we can just keep adding until we see a jump
     # the jump is the block size.
-    start = len(encryption_oracle(b'A'))
+    start = len(oracle(b'A'))
     current = start
     i = 2
     while start == current:
-        current = len(encryption_oracle(b'A' * i))
+        current = len(oracle(b'A' * i))
         i += 1
     return current - start
 
-
-def find_next_byte(ask, have, bs, block):
-    possible_last_bytes = {bytes(have + [i]):encryption_oracle(bytes(have +[i])) for i in range(255)}
-    enc = encryption_oracle(bytes(ask))
+def find_next_byte(oracle, ask, have, bs, block, prefix_length):
+    possible_last_bytes = {bytes(have + [i]):oracle(bytes(have +[i])) for i in range(255)}
+    enc = oracle(bytes(ask))
     for k, v in possible_last_bytes.items():
-        if enc[:bs*block] == v[:bs*block]:
+        if enc[prefix_length:bs*block] == v[prefix_length:bs*block]:
             return k[-1]
     return -1
 
-def decrypt_ecb_with_oracle():
-    bs = find_block_size()
-    using_ecb = is_ecb(encryption_oracle(b'yellow submarine' * 2), bs)
+def decrypt_ecb_with_oracle(oracle, prefix_length):
+    bs = find_block_size(oracle)
+    using_ecb = is_ecb(oracle(b'yellow submarine' * 10), bs)
     if not using_ecb:
         raise Exception("can't do this attack")
-    decrypted, i = [], 0
+    decrypted, i = [], prefix_length
     while True:
-        block = i // bs
-        if len(decrypted) == 0:
-            have = [ord('A')]*(bs-1)
-            ask = have
-        else:
-            ask = [ord('A')]*(bs*(block+1)- 1 -i)
-            have = ask + decrypted
-        secret_byte = find_next_byte(ask, have, bs, block+1)
+        block, index_in_block = divmod(i, bs)
+        # we want ask be whatever number of bytes that gets us to block_size - 1
+        # [D1 D2 D3 D4] [D5 A A S]
+        # Each iteration we decrypt one byte, and move that from ask to have
+        # prefix + decrypted + A's = block multiple - 1
+        # and we compare against
+        ask = [ord('A')]*(bs - index_in_block - 1)
+        have = ask + decrypted
+        secret_byte = find_next_byte(oracle, ask, have, bs, block+1, prefix_length)
         if secret_byte == -1:
             break
         decrypted.append(secret_byte)
@@ -56,4 +56,4 @@ def decrypt_ecb_with_oracle():
     return bytes(decrypted)
 
 if __name__ == '__main__':
-    print(decrypt_ecb_with_oracle())
+    print(decrypt_ecb_with_oracle(encryption_oracle, 0))

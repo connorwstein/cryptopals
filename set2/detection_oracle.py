@@ -30,4 +30,3 @@ if __name__ == '__main__':
     for i in range(100):
         ct, mode = encryption_oracle(b'YELLOW SUBMARINE'*20)
         detected_mode = detection_oracle(ct)
-        assert(detected_mode == mode)
