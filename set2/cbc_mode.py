@@ -14,14 +14,13 @@ def encrypt_aes_cbc(key, msg, block_size, iv):
     return b''.join(ct)
 
 def decrypt_aes_cbc(key, msg, block_size, iv):
-    ct_prev, pt, i = iv, [], 0
+    ct_prev, pt, i = iv, bytearray([]), 0
     while i < len(msg) / block_size:
         ct = msg[i*block_size:(i+1)*block_size]
-        pt_block = xor(ct_prev, decrypt_aes_ecb(key, ct))
-        pt.append(pt_block)
+        pt.extend(xor(ct_prev, decrypt_aes_ecb(key, ct)))
         ct_prev = ct
         i += 1
-    return b''.join(pt)
+    return bytes(pt)
 
 if __name__ == '__main__':
     ct = encrypt_aes_cbc(b'YELLOW SUBMARINE',
